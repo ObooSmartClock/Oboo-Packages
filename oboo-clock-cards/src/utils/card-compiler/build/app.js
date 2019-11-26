@@ -1,0 +1,1 @@
+function log(o){console.log(o)}log("main file");

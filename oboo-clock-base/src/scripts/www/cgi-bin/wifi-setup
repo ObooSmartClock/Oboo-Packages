@@ -1,0 +1,78 @@
+#!/bin/sh
+
+# include the json sh library
+. /usr/share/libubox/jshn.sh
+
+echo "Content-type: application/json"
+echo "Access-Control-Allow-Origin: *"
+
+echo ""
+
+
+
+if [ -e /tmp/setupMode ]; then
+
+	# read query string
+	set $QUERY_STRING
+	params="$*"
+
+	# initialize wifisetup argument string
+	wifisetupArgs="-j -b64 "
+
+	while [ "$params" != "" ]; do
+		val=${params%%&*}
+
+		key=${val%%=*}
+		value=${val#*=}
+
+		#echo -n "$key:$value "
+
+		# url decode
+		value=$(urldecode "$value")
+
+		case "$key" in
+			"cmd")
+				wifisetupArgs="$wifisetupArgs $value"
+			;;
+			"ssid")
+				wifisetupArgs="$wifisetupArgs -ssid $value"
+				#json_add_string "ssid" "$value"
+			;;
+			"bssid")
+				wifisetupArgs="$wifisetupArgs -bssid $value"
+				#json_add_string "bssid" "$value"
+			;;
+			"password")
+				wifisetupArgs="$wifisetupArgs -password $value"
+				#json_add_string "password" "$value"
+			;;
+			"encr")
+				wifisetupArgs="$wifisetupArgs -encr $value"
+				#json_add_string "encr" "$value"
+			;;
+			*)
+				# do nothing, unrecognized
+			;;
+		esac
+
+		#check if loop needs to end - since there is no terminating & character
+		test=$(echo $params | grep "&")
+		if [ "$test" != "" ]; then
+			# grab the remaining parameters
+			params=${params#*&}
+		else
+			break
+		fi
+	done
+
+	# output the json
+	#echo "$wifisetupArgs"
+
+	wifisetup $wifisetupArgs
+
+	exit 0
+
+else
+	echo '{"error": "setup mode not active"}'
+	exit 1
+fi

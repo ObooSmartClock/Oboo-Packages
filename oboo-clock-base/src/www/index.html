@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Oboo Smart Clock</title>
+	<style type="text/css">
+	body {
+		margin: 0;
+		padding: 0;
+		font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+	}
+	.container {
+		width: 100%;
+		height: 100vh;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		flex-direction: column;
+		min-height: 680px;
+	}
+	.logo {
+		margin-top: 40px;
+		width: 200px;
+		height: 200px;
+		position: relative;
+		border: 4em solid transparent;
+		border-radius: 50%;
+		background: white;
+		background-clip: padding-box;
+		/*padding: 10px;*/
+	}
+
+	.logo::after {
+
+		position: absolute;
+		top: -4em; bottom: -4em;
+		left: -4em; right: -4em;
+		content: '';
+		z-index: -1;
+		border-radius: 50%;
+
+
+		background: linear-gradient(-45deg, #EE7752, #E73C7E, #23A6D5, #23D5AB);
+		background-size: 400% 400%;
+		-webkit-animation: Gradient 10s ease infinite;
+		-moz-animation: Gradient 10s ease infinite;
+		animation: Gradient 10s ease infinite;
+	}
+
+
+	@-webkit-keyframes Gradient {
+		0% {
+			background-position: 0% 50%
+		}
+		50% {
+			background-position: 100% 50%
+		}
+		100% {
+			background-position: 0% 50%
+		}
+	}
+
+	@-moz-keyframes Gradient {
+		0% {
+			background-position: 0% 50%
+		}
+		50% {
+			background-position: 100% 50%
+		}
+		100% {
+			background-position: 0% 50%
+		}
+	}
+
+	@keyframes Gradient {
+		0% {
+			background-position: 0% 50%
+		}
+		50% {
+			background-position: 100% 50%
+		}
+		100% {
+			background-position: 0% 50%
+		}
+	}
+
+	.message {
+		margin-top: 40px;
+		color: #667189;
+		text-align: center;
+		font-size: 20px;
+		line-height: 1.5;
+	}
+
+	.btn {
+		color: white;
+		background-color: #23A6D5;
+		padding: 15px;
+		font-size: 16px;
+		/*height: 80px;*/
+		border-radius: 30px;
+		text-decoration: none;
+		margin-top: 40px;
+	}
+
+	.foot {
+		margin-bottom: 20px;
+	}
+
+	.foot a{
+		font-size: 12px;
+		text-decoration: none;
+		color: #667189;
+		margin-left: 30px;
+	}
+
+	.browser.icon {
+		color: #000;
+		position: absolute;
+		margin-left: 2px;
+		margin-top: 2px;
+		width: 15px;
+		height: 15px;
+		border-radius: 50%;
+		border: solid 1px currentColor;
+	}
+
+	.browser.icon:before {
+		content: '';
+		position: absolute;
+		left: 1px;
+		top: 1px;
+		width: 11px;
+		height: 11px;
+		border-radius: 85% 15%;
+		-webkit-transform: rotate(-45deg);
+		transform: rotate(-45deg);
+		border: solid 1px currentColor;
+	}
+
+	.browser.icon:after {
+		content: '';
+		position: absolute;
+		top: 7px;
+		width: 15px;
+		height: 1px;
+		background-color: currentColor;
+	}
+
+
+
+
+
+</style>
+</head>
+<body>
+
+	<div class="container">
+
+		<div class="logo"></div>
+		<div class="message">
+			<p><strong>Welcome to your Oboo Smart Clock</strong>
+				<br>
+				<br>
+				<br>
+				<a class="btn" href="https://getoboo.com/getstarted">Get Started</a>
+				<br>
+				<br>
+				<br>
+				
+			</p>
+		</div>
+
+		<div class="foot">
+			
+			<a href="https://getoboo.com"><div class="browser icon"></div> GetOboo.com</a>
+		</div>
+
+	</div>
+
+</body>
+</html>

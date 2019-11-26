@@ -1,0 +1,22 @@
+{
+    "cmd":"new_card",
+    "bg_color": 13,
+    "responseTopic": "/card_new1",
+    "elements": [
+        {
+            "id": 0,
+            "type": "calendar",
+            "position": {
+                "x": 60,
+                "y": 70
+            },
+            "size": 3,
+            "value": "hello",
+            "date": {
+              "year": 2019,
+              "month": 6,
+              "day": 30
+            }
+        }
+    ]
+}

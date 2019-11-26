@@ -1,0 +1,55 @@
+#!/bin/sh
+
+echo "Content-type: application/json"
+echo "Access-Control-Allow-Origin: *"
+
+echo ""
+
+if [ -e /tmp/setupMode ]; then
+	newpass=""
+
+	# read query string
+	set $QUERY_STRING
+	params="$*"
+
+	while [ "$params" != "" ]; do
+		val=${params%%&*}
+
+		key=${val%%=*}
+		value=${val#*=}
+
+		#echo -n "$key:$value "
+
+		# url decode
+		value=$(urldecode "$value")
+
+		case "$key" in
+			"new")
+				newpass="$value"
+			;;
+			*)
+				# do nothing, unrecognized
+			;;
+		esac
+
+		#check if loop needs to end - since there is no terminating & character
+		test=$(echo $params | grep "&")
+		if [ "$test" != "" ]; then
+			# grab the remaining parameters
+			params=${params#*&}
+		else
+			break
+		fi
+	done
+
+	if [ "$newpass" != "" ]; then
+		echo -e "$newpass\n$newpass" | (passwd root) &> /dev/null
+		echo '{"secure": true}'
+	fi
+
+	exit 0
+
+else
+	echo '{"error": "setup mode not active"}'
+	exit 1
+fi

@@ -1,0 +1,11 @@
+#!/bin/sh /etc/rc.common
+
+START=80
+
+USE_PROCD=1
+BIN="/usr/bin/mcu/update.sh"
+
+
+boot() {
+    $BIN
+}

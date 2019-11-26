@@ -1,0 +1,25 @@
+#!/bin/sh
+
+echo "Content-type: application/json"
+echo "Access-Control-Allow-Origin: *"
+
+echo ""
+
+if [ -e /tmp/setupMode ]; then
+
+	echo "{
+		\"device_name\": \"`uci get system.@system[0].hostname`\",
+		\"model\": \"`ubus call system board | jsonfilter -e '@.model'`\",
+		\"firmware\": {
+			\"version\": \"`uci get onion.@onion[0].version`\",
+			\"build\": \"`uci get onion.@onion[0].build`\"
+		},
+		\"software\": \"`opkg list-installed | grep oboo-clock-base | awk '{printf $3;}'`\"
+	}"
+
+	exit 0
+
+else
+	echo '{"error": "setup mode not active"}'
+	exit 1
+fi

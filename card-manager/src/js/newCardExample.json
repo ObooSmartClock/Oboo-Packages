@@ -1,0 +1,17 @@
+{
+    "cmd":"new_card",
+    "bg_color": 13,
+    "responseTopic": "/card_new1",
+    "elements": [
+        {
+            "id": 0,
+            "type": "text",
+            "position": {
+                "x": 60,
+                "y": 70
+            },
+            "size": 3,
+            "value": "hello"
+        }
+    ]
+}

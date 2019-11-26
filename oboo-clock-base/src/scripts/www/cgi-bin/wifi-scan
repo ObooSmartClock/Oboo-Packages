@@ -1,0 +1,15 @@
+#!/bin/sh
+
+echo "Content-type: application/json"
+echo "Access-Control-Allow-Origin: *"
+echo ""
+
+if [ -e /tmp/setupMode ]; then
+	echo $(ubus call onion wifi-scan '{"device":"ra0"}')
+
+	exit 0
+
+else
+	echo '{"error": "setup mode not active"}'
+	exit 1
+fi

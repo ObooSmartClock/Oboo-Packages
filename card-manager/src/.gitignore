@@ -1,0 +1,8 @@
+*.o
+bin/
+.built 
+.configured_yyyynnnynn 
+.prepared 
+.quilt_checked 
+.source_dir 
+ipkg-mipsel_24kc/
