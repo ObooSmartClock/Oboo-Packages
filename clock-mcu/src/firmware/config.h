@@ -18,12 +18,13 @@
 struct ConfigData {
   bool twelveHMode; // True = 12h; False = 24h
   bool dayNightIndicator; // True = enable; False = disable
+  int  blink; // 0 = none; 1 only during the day; 2 always
 };
 
 extern ConfigData mcuConfig;
 
 void initConfig() {
-  mcuConfig = {true, true};
+  mcuConfig = {true, true, 2};
 }
 
 void saveConfig() {
