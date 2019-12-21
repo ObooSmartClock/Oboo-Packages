@@ -35,7 +35,7 @@ static void read_i2c_bytes(uint8_t addr, uint8_t numBytes, uint8_t *values) {
   // Wire._I2C_WRITE((byte)reg);
   // Wire.endTransmission();
 
-  Wire.requestFrom(addr, (byte)2, true);
+  Wire.requestFrom(addr, (byte)2, (byte)true);
   while (Wire.available()) {
 	  if (count < numBytes) {
 		  values[count] = Wire.read();
@@ -99,7 +99,7 @@ uint8_t handleTouch() {
 void sendButtonCommand(uint8_t buttons, uint32_t timePressed) {
   char buf[64];
 	// send button status via serial
-	sprintf(buf, "%02x%d", buttons, timePressed);
+	sprintf(buf, "%02x%lu", buttons, timePressed);
 	sendCommand(CMD_SEND_TOUCH, buf);
 }
 
