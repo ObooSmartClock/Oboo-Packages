@@ -8,7 +8,7 @@
 include $(TOPDIR)/rules.mk
 PKG_NAME:=oboo-clock-cards
 PKG_VERSION:=0.2.9
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -58,7 +58,7 @@ define Build/Compile
 endef
 
 define Package/oboo-clock-cards/install
-	$(INSTALL_DIR) $(1)/usr/bin $(1)/usr/bin/img $(1)/usr/bin/js $(1)/etc/init.d/ $(1)/etc/cron.minute/
+	$(INSTALL_DIR) $(1)/usr/bin $(1)/usr/bin/img $(1)/usr/cards $(1)/usr/cards/modules $(1)/usr/bin/js $(1)/usr/modules $(1)/etc/init.d/ $(1)/etc/cron.minute/
 	# install the images
 	$(CP) $(PKG_BUILD_DIR)/weather-card/img/bin/* $(1)/usr/bin/img/.
 	$(CP) $(PKG_BUILD_DIR)/timer-card/img/bin/* $(1)/usr/bin/img/.
@@ -73,18 +73,18 @@ define Package/oboo-clock-cards/install
 	# install the runtime binary
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/oboo-runtime/bin/ort $(1)/usr/bin/
 	# install the js scripts
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/oboo-runtime/js/card-lib.js $(1)/usr/bin/js/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/oboo-runtime/js/yahooWeather.js $(1)/usr/bin/js/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/timer-card/timer.js $(1)/usr/bin/js/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/weather-card/weather.js $(1)/usr/bin/js/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/calendar-card/calendar.js $(1)/usr/bin/js/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/oboo-runtime/js/card-lib.js $(1)/usr/modules/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/oboo-runtime/js/weatherAPI.js $(1)/usr/cards/modules/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/timer-card/timer.js $(1)/usr/cards/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/weather-card/weather.js $(1)/usr/cards/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/calendar-card/calendar.js $(1)/usr/cards/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/upgrade-card/upgrade.js $(1)/usr/bin/js/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/input-processor/mcu.js $(1)/usr/bin/js/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/audio-manager/audio.js $(1)/usr/bin/js/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/music-card/music.js $(1)/usr/bin/js/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/audio-manager/audio.js $(1)/usr/cards/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/music-card/music.js $(1)/usr/cards/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/device-client/client.js $(1)/usr/bin/js/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/system-card/system.js $(1)/usr/bin/js/
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/alarm/alarm.js $(1)/usr/bin/js/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/alarm/alarm.js $(1)/usr/cards/
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/config-update/updateConfig.js $(1)/usr/bin/js/
 	# install the init.d script
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/device/etc/init.d/oboo-cards $(1)/etc/init.d/oboo-cards

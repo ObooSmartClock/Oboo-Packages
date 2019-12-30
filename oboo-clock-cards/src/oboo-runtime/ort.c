@@ -34,14 +34,8 @@ int main(int argc, char *argv[]) {
     getCWDir(cwd);
 
     getExeDir(tempDir);
-
-    sprintf(globalDirPath,"%s",dirname(tempDir)); // want the modules folder to sit next to the bin folder not under it.
+    sprintf(globalDirPath,"%s",dirname(tempDir));
     setGlobalDirectory(globalDirPath);
-
-    getFilePath(libPath, "bin/js/card-lib.js", globalDirPath); // removing in next commit
-    loadJS(libPath); // removing in next commit
-    getFilePath(libPath, "bin/js/yahooWeather.js", globalDirPath); // removing in next commit
-    loadJS(libPath); // removing in next commit
 
     /* file operations */
     getFilePath(filePath, filename, cwd);

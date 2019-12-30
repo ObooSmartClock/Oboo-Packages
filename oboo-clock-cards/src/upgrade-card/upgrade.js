@@ -1,6 +1,10 @@
+// TODO: what is this card? (looks like it runs an update from usb?)
+var cardLib = require("card-lib");
+var onRecvMessage = cardLib.onRecvMessage; // is there a cleaner way to do this?
+
 var cardInfo = {
     id: -1,
-    responseTopic: '/upgradeCard' + getEpochMillis(),
+    responseTopic: '/upgradeCard' + cardLib.getEpochMillis(),
     bgColor: 13,
 }
 
@@ -58,7 +62,7 @@ function onMessage(e) {
     //     print('message! topic: ' + e.topic + ', value: ' + e.payload);
     //     switch (e.topic) {
     //         case '/cardResponse':
-    //             cardInfo = handleCardResponseMessage(cardInfo, e.payload);
+    //             cardInfo = cardLib.handleCardResponseMessage(cardInfo, e.payload);
     //             break;
     //         default:
     //             break;

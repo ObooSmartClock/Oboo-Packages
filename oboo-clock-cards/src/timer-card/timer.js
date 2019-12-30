@@ -1,7 +1,10 @@
+var cardLib = require("card-lib");
+var onRecvMessage = cardLib.onRecvMessage; // is there a cleaner way to do this?
+
 var cardInfo = {
     id: -1,
     active: false,
-    responseTopic: '/timerCard_' + getEpochMillis(),
+    responseTopic: '/timerCard_' + cardLib.getEpochMillis(),
     bgColor: 13,
     nightlight: [
         0xff0000,
@@ -110,11 +113,11 @@ function updateDisplay(timeLeft) {
 
     var seconds = timeLeft % 60;
     var minutes = (timeLeft - seconds)/60
-    var timerString = zeroPad(minutes, 2) + ':' + zeroPad(seconds, 2)
+    var timerString = cardLib.zeroPad(minutes, 2) + ':' + cardLib.zeroPad(seconds, 2)
 
     if (timerString !== cardInfo.params.lastUpdate) {
-        var updateObj = generateUpdateCardObj(cardInfo.id);
-        updateObj.elements.push(generateElementUpdate(
+        var updateObj = cardLib.generateUpdateCardObj(cardInfo.id);
+        updateObj.elements.push(cardLib.generateElementUpdate(
                                     elementId.timerValue,
                                     timerString)
                                 );
@@ -127,26 +130,26 @@ function updateDisplay(timeLeft) {
 
 // card functions
 function createCard () {
-    var cardObj = generateNewCardObj(cardInfo.bgColor, cardInfo.responseTopic);
+    var cardObj = cardLib.generateNewCardObj(cardInfo.bgColor, cardInfo.responseTopic);
     // background and buttons
-    cardObj.elements.push(generateImageElement(
+    cardObj.elements.push(cardLib.generateImageElement(
                             elementId.background,
-                            generateImgPath(imgRootPath, timerImg['background']),
+                            cardLib.generateImgPath(cardLib.imgRootPath, timerImg['background']),
                             2, 46)
                         );
-    cardObj.elements.push(generateImageElement(
+    cardObj.elements.push(cardLib.generateImageElement(
                             elementId.buttons,
-                            generateImgPath(imgRootPath, timerImg['buttons']),
+                            cardLib.generateImgPath(cardLib.imgRootPath, timerImg['buttons']),
                             21, 10)
                         );
     // timer start and timer value
-    // cardObj.elements.push(generateTextElement(
+    // cardObj.elements.push(cardLib.generateTextElement(
     //                         elementId.timerStartValue,
     //                         cardInfo.params.timerStartValue,
     //                         23,
     //                         0, 103, 'center')
     //                     );
-    cardObj.elements.push(generateTextElement(
+    cardObj.elements.push(cardLib.generateTextElement(
                             elementId.timerValue,
                             "00:00",
                             82,
@@ -258,7 +261,7 @@ function onMessage(e) {
         print('message! topic: ' + e.topic + ', value: ' + e.payload);
         switch (e.topic) {
             case '/cardResponse':
-                cardInfo = handleCardResponseMessage(cardInfo, e.payload);
+                cardInfo = cardLib.handleCardResponseMessage(cardInfo, e.payload);
                 break;
             case '/test/set3':
                 print('setting timerLength to 3000');

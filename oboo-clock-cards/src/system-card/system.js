@@ -1,3 +1,6 @@
+var cardLib = require("card-lib");
+var onRecvMessage = cardLib.onRecvMessage; // is there a cleaner way to do this?
+
 var cardInfo = {
     id: -1,
     active: false,
@@ -44,22 +47,22 @@ function createCard () {
     if (cardInfo.cardCreated) {
       return;
     }
-    var cardObj = generateNewCardObj(cardInfo.bgColor, cardInfo.responseTopic);
+    var cardObj = cardLib.generateNewCardObj(cardInfo.bgColor, cardInfo.responseTopic);
 
-    cardObj.elements.push(generateImageElement(
+    cardObj.elements.push(cardLib.generateImageElement(
                             elementId.systemImage,
-                            generateImgPath(imgRootPath, 'system'),
+                            cardLib.generateImgPath(cardLib.imgRootPath, 'system'),
                             0, 0)
                         );
 
-    cardObj.elements.push(generateTextElement(
+    cardObj.elements.push(cardLib.generateTextElement(
                             elementId.versionInfoFw,
                             'Build: ' + cardInfo.versions.fw,
                             15,
                             0, 245, 'left')
                         );
 
-    cardObj.elements.push(generateTextElement(
+    cardObj.elements.push(cardLib.generateTextElement(
                             elementId.versionInfoSw,
                             'Software: ' + cardInfo.versions.sw,
                             15,
@@ -218,7 +221,7 @@ function onMessage(e) {
         print('message! topic: ' + e.topic + ', value: ' + e.payload);
         switch (e.topic) {
             case '/cardResponse':
-                cardInfo = handleCardResponseMessage(cardInfo, e.payload);
+                cardInfo = cardLib.handleCardResponseMessage(cardInfo, e.payload);
                 break;
             default:
                 break;
