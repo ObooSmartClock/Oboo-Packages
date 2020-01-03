@@ -48,7 +48,7 @@ void setupGesture () {
 	200 LED_BOOST = 2
 	300 LED_BOOST = 3
 	*/
-	apds.setLED(0x3,0x0); //onion.io Aug 16 2018: lower LED power improves touch performance
+	apds.setLED((apds9960LedDrive_t)0x3, APDS9960_LEDBOOST_100PCNT); //onion.io Aug 16 2018: lower LED power improves touch performance, interface in the library is fucked up, if using the enum it'll be too large to fit
 
 #endif // GESTURE_ENABLED
 }
@@ -123,7 +123,7 @@ void handleGesture() {
 void handleAmbientLight() {
 	uint16_t val = 0;
 	uint16_t delta;
-	bool status;
+	bool status = false;
 
 #if GESTURE_ENABLED && GESTURE_SPARKFUN_ENABLED
 	status = apds.readAmbientLight(val);
