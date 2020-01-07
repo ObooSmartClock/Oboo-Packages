@@ -1,2 +1,2 @@
 #!/bin/sh
-/usr/bin/ort /usr/bin/js/alarm.js
+/usr/bin/ort /usr/cards/alarm.js

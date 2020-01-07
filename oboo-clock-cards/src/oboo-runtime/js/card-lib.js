@@ -1,34 +1,34 @@
 // generic card functions
-var imgRootPath = '/usr/bin/img';
+exports.imgRootPath = '/usr/bin/img'; // This should be relative to the card? unless there are shared images?
 
 // general helper functions
-function zeroPad(num, places) {
-  var zero = places - num.toString().length + 1;
-  return Array(+(zero > 0 && zero)).join("0") + num;
+exports.zeroPad = function (num, places) {
+    var zero = places - num.toString().length + 1;
+    return Array(+(zero > 0 && zero)).join("0") + num;
 }
 
 // time&date functions
-function getEpochMillis() {
+exports.getEpochMillis = function () {
     return Date.now();
 }
-
-function generateDate() {
+ 
+exports.generateDate = function () {
     var dt = new Date
     return {
-      'type': 'calendar',
-      'value': 'update',
-      'id': 0,
-      'date': {
-        'year' : dt.getFullYear(),
-        'month': dt.getMonth()+1,
-        'day':   dt.getDate()
-      }
+        'type': 'calendar',
+        'value': 'update',
+        'id': 0,
+        'date': {
+            'year': dt.getFullYear(),
+            'month': dt.getMonth() + 1,
+            'day': dt.getDate()
+        }
     };
 }
 
 
-function getEpoch() {
-    return Math.floor(getEpochMillis() / 1000);
+exports.getEpoch = function () {
+    return Math.floor(cardLib.getEpochMillis() / 1000);
 }
 
 function getCurrentHour() {
@@ -37,12 +37,12 @@ function getCurrentHour() {
 }
 
 // path generating functions
-function generateImgPath(rootPath, imgName) {
+exports.generateImgPath = function (rootPath, imgName) {
     return rootPath + '/img_' + imgName + '.bin';
 }
 
 // functions generating card objects
-function generateNewCardObj(bgColor, responseTopic) {
+exports.generateNewCardObj = function (bgColor, responseTopic) {
     return {
         'cmd': 'new_card',
         'bg_color': bgColor,    // TODO: change bgColor from hex to dec
@@ -51,7 +51,7 @@ function generateNewCardObj(bgColor, responseTopic) {
     };
 }
 
-function generateUpdateCardObj(cardId) {
+exports.generateUpdateCardObj = function (cardId) {
     return {
         'cmd': 'update_card',
         'id': cardId,
@@ -59,41 +59,41 @@ function generateUpdateCardObj(cardId) {
     };
 }
 
-function generateElement (id, type, value, posX, posY, alignment) {
+function generateElement(id, type, value, posX, posY, alignment) {
     var obj = {
         'id': id,
         'type': type,
         'value': value
     }
-    
+
     if (typeof posX !== 'undefined' && typeof posY !== 'undefined') {
         var pos = {
             'x': posX,
             'y': posY
         };
         if (typeof alignment !== 'undefined' &&
-            (alignment === 'left' || alignment === 'center' || alignment === 'right') 
+            (alignment === 'left' || alignment === 'center' || alignment === 'right')
         ) {
             pos['align'] = alignment;
         }
         obj['position'] = pos;
     }
-    
+
     return obj;
 }
 
-function generateElementCal (id, type, value, posX, posY, alignment) {
+exports.generateElementCal = function (id, type, value, posX, posY, alignment) {
     var dt = new Date
     var obj = {
-          'id': id,
-          'type': type,
-          'size': value,
-          'date': {
-            'year' : dt.getFullYear(),
-            'month': dt.getMonth()+1,
-            'day':   dt.getDate()
-          }
+        'id': id,
+        'type': type,
+        'size': value,
+        'date': {
+            'year': dt.getFullYear(),
+            'month': dt.getMonth() + 1,
+            'day': dt.getDate()
         }
+    }
 
     if (typeof posX !== 'undefined' && typeof posY !== 'undefined') {
         var pos = {
@@ -101,31 +101,31 @@ function generateElementCal (id, type, value, posX, posY, alignment) {
             'y': posY
         };
         if (typeof alignment !== 'undefined' &&
-            (alignment === 'left' || alignment === 'center' || alignment === 'right') 
+            (alignment === 'left' || alignment === 'center' || alignment === 'right')
         ) {
             pos['align'] = alignment;
         }
         obj['position'] = pos;
     }
-    
+
     return obj;
 }
 
-function generateTextElement (id, value, size, posX, posY, alignment){
+exports.generateTextElement = function (id, value, size, posX, posY, alignment) {
     var obj = generateElement(id, 'text', value, posX, posY, alignment);
-    
-    if (size !== null){
+
+    if (size !== null) {
         obj['size'] = size;
     }
-    
+
     return obj;
 }
 
-function generateImageElement(id, value, posX, posY, alignment){
-   return generateElement(id, 'image', value, posX, posY, alignment);    
+exports.generateImageElement = function (id, value, posX, posY, alignment) {
+    return generateElement(id, 'image', value, posX, posY, alignment);
 }
 
-function generateElementUpdate(id, value) {
+exports.generateElementUpdate = function (id, value) {
     return {
         'id': id,
         'value': value
@@ -134,26 +134,26 @@ function generateElementUpdate(id, value) {
 
 // message queue functions 
 // code review: good to have this function since every card requires this action?
-function onRecvMessage(e) {
-    if (typeof e.topic !== 'undefined' && typeof e.payload !== 'undefined' ) {
+exports.onRecvMessage = function (e) {
+    if (typeof e.topic !== 'undefined' && typeof e.payload !== 'undefined') {
         var payloadObj = e.payload;
-        
+
         if (typeof e.payload === 'string' || e.payload instanceof String) {
             print('recvMessage: payload is a string, converting...');
             // print('recvMessage: ' + e.payload);
             try {
                 payloadObj = JSON.parse(e.payload);
-            } catch(err) {
+            } catch (err) {
                 print(err); // error in the above string (in this case, yes)!
                 print('ERROR Could not parse payload')
                 return null;
             }
-        } 
-        
+        }
+
         if (e.topic === '/button' || e.topic === '/gesture') {
             onInput({
-               source: e.topic.replace(/^\//, ''),
-               payload: payloadObj
+                source: e.topic.replace(/^\//, ''),
+                payload: payloadObj
             });
         } else {
             onMessage({
@@ -161,11 +161,11 @@ function onRecvMessage(e) {
                 payload: payloadObj
             });
         }
-        
+
     }
 }
 
-function handleCardResponseMessage (cardInfo, payload) {
+exports.handleCardResponseMessage = function (cardInfo, payload) {
     if (typeof payload === 'string' || payload instanceof String) {
         try {
             payload = JSON.parse(payload);
@@ -179,16 +179,15 @@ function handleCardResponseMessage (cardInfo, payload) {
         switch (payload.action) {
             case 'create':
                 if (cardInfo.id < 0 &&
-                    typeof payload.attention !== 'undefined' && 
-                    payload.attention === cardInfo.responseTopic) 
-                {
-                        // assign the card it's id
-                        cardInfo.id = payload.cardId;
-                        print('Assigning card its id: ' + cardInfo.id);
-                        setCardNightlightColors(cardInfo.nightlight || 0);
+                    typeof payload.attention !== 'undefined' &&
+                    payload.attention === cardInfo.responseTopic) {
+                    // assign the card it's id
+                    cardInfo.id = payload.cardId;
+                    print('Assigning card its id: ' + cardInfo.id);
+                    setCardNightlightColors(cardInfo.nightlight || 0);
                 }
                 break;
-                
+
             case 'select':
                 if (cardInfo.id === payload.cardId) {
                     // this has become the active card

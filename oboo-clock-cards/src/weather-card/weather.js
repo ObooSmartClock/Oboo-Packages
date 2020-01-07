@@ -1,6 +1,13 @@
+// Card to display the Weather
+// TODO: Fill in more details.
+
+var weatherapi = require("weatherAPI");
+var cardLib = require("card-lib");
+var onRecvMessage = cardLib.onRecvMessage; // is there a cleaner way to do this?
+
 var cardInfo = {
     id: -1,
-    responseTopic: '/weatherCard_' + getEpochMillis(),
+    responseTopic: '/weatherCard_' + cardLib.getEpochMillis(),
     // bgColor: 0xc44569,
     bgColor: 0x0,
     params: {
@@ -9,7 +16,7 @@ var cardInfo = {
         distanceUnit: 'imperial',
         prevCalendarDay: -1,
         prevUpdate: 0,
-        updateInterval: 15*60*1000 // 15 min
+        updateInterval: 15 * 60 * 1000 // 15 min
     },
     enabled: true
 }
@@ -67,11 +74,11 @@ var weatherImg = {
     separator: "line",
 }
 
-function getFormattedDate () {
-    var weekdays = [ "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+function getFormattedDate() {
+    var weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
 
     var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "June",
-    "July", "Aug", "Sept", "Oct", "Nov", "Dec"
+        "July", "Aug", "Sept", "Oct", "Nov", "Dec"
     ]
 
     var date = new Date()
@@ -84,56 +91,55 @@ function getFormattedDate () {
 }
 
 
-function createCard () {
+function createCard() {
     var dateObj = getFormattedDate()
-    var cardObj = generateNewCardObj(cardInfo.bgColor, cardInfo.responseTopic)
+    var cardObj = cardLib.generateNewCardObj(cardInfo.bgColor, cardInfo.responseTopic)
 
-    cardObj.elements.push(generateImageElement(
+    cardObj.elements.push(cardLib.generateImageElement(
         elementId.weatherUnitIndicator,
-        generateImgPath(imgRootPath, weatherImg['degree']),
-                            200, 50) )
+        cardLib.generateImgPath(cardLib.imgRootPath, weatherImg['degree']),
+        200, 50))
 
-    cardObj.elements.push(generateTextElement(
+    cardObj.elements.push(cardLib.generateTextElement(
         elementId.weatherTemperature,
         '--',
         82,
-        -40, 40, 'right') )
+        -40, 40, 'right'))
 
     // main weather image
-    cardObj.elements.push(generateImageElement(
+    cardObj.elements.push(cardLib.generateImageElement(
         elementId.weatherMainImage,
-        generateImgPath(imgRootPath, weatherImg['oboo']),
-                            // generateImgPath(imgRootPath, weatherImg['sunny']),
-                            10, 5)
+        cardLib.generateImgPath(cardLib.imgRootPath, weatherImg['oboo']),
+        10, 5)
     )
     // date
-    cardObj.elements.push(generateTextElement(
+    cardObj.elements.push(cardLib.generateTextElement(
         elementId.date,
         dateObj.weekday + ', ' + dateObj.month + ' ' + dateObj.day,
         23,
         0, 160, 'center')
     )
-    cardObj.elements.push(generateImageElement(
+    cardObj.elements.push(cardLib.generateImageElement(
         elementId.weatherParameterIcon,
-        generateImgPath(imgRootPath, weatherImg['wind-speed']),
+        cardLib.generateImgPath(cardLib.imgRootPath, weatherImg['wind-speed']),
         30, 205)
     )
-    cardObj.elements.push(generateTextElement(
+    cardObj.elements.push(cardLib.generateTextElement(
         elementId.weatherParameterValue,
         '--',
         50,
         -64, 209, 'right')
     )
-    cardObj.elements.push(generateTextElement(
+    cardObj.elements.push(cardLib.generateTextElement(
         elementId.weatherParameterUnits,
         'km/h',
         23,
         180, 233, 'left')
     )
     // line separator
-    cardObj.elements.push(generateImageElement(
+    cardObj.elements.push(cardLib.generateImageElement(
         elementId.separator,
-        generateImgPath(imgRootPath, weatherImg['separator']),
+        cardLib.generateImgPath(cardLib.imgRootPath, weatherImg['separator']),
         21, 190)
     )
 
@@ -142,7 +148,7 @@ function createCard () {
 }
 
 var cycleCounter = 100
-function cycleInfo () {
+function cycleInfo() {
     cycleCounter += 1
     if (cycleCounter >= 100) {
         cycleCounter = 0
@@ -155,8 +161,8 @@ function cycleInfo () {
 
 
 var weather
-function updateWeather () {
-    var result = getYahooWeather(cardInfo.params.location, cardInfo.params.tempUnit, cardInfo.params.distanceUnit)
+function updateWeather() {
+    var result = weatherapi.getWeather(cardInfo.params.location, cardInfo.params.tempUnit, cardInfo.params.distanceUnit)
 
     if (result !== null) {
         weather = result
@@ -170,17 +176,17 @@ function updateWeather () {
 
 
 var secIndex = 0
-function updateDisplay (forceUpdate) {
+function updateDisplay(forceUpdate) {
 
-    var updateObj = generateUpdateCardObj(cardInfo.id)
-    var update = forceUpdate?true:false
+    var updateObj = cardLib.generateUpdateCardObj(cardInfo.id)
+    var update = forceUpdate ? true : false
 
     /* Date */
     var dateObj = getFormattedDate()
     // only update if the calendar day has changed
     if (cardInfo.params.prevCalendarDay !== dateObj.day) {
 
-        updateObj.elements.push(generateElementUpdate(
+        updateObj.elements.push(cardLib.generateElementUpdate(
             elementId.date,
             dateObj.weekday + ', ' + dateObj.month + ' ' + dateObj.day)
         )
@@ -194,46 +200,46 @@ function updateDisplay (forceUpdate) {
     /* Weather */
     if (weather !== null) {
         // update Main info
-        updateObj.elements.push(generateElementUpdate(
+        updateObj.elements.push(cardLib.generateElementUpdate(
             elementId.weatherTemperature,
             weather.temperature)
         )
-        
-        updateObj.elements.push(generateElementUpdate(
+
+        updateObj.elements.push(cardLib.generateElementUpdate(
             elementId.weatherMainImage,
-            generateImgPath(imgRootPath, weatherImg[weather.condition])
-            )
+            cardLib.generateImgPath(cardLib.imgRootPath, weatherImg[weather.condition])
+        )
         )
 
-        updateObj.elements.push(generateElementUpdate(
+        updateObj.elements.push(cardLib.generateElementUpdate(
             elementId.weatherUnitIndicator,
-            generateImgPath(imgRootPath, weatherImg[cardInfo.params.tempUnit === 'fahrenheit'?'degreeF':'degreeC'])
-            )
+            cardLib.generateImgPath(cardLib.imgRootPath, weatherImg[cardInfo.params.tempUnit === 'fahrenheit' ? 'degreeF' : 'degreeC'])
+        )
         )
 
         // update Secondary info
         if (cycleInfo()) {
             secIndex += 1
-            secIndex %=   weather.secondary.length
+            secIndex %= weather.secondary.length
             update = true
         }
 
         var secInfo = weather.secondary[secIndex]
 
-        updateObj.elements.push(generateElementUpdate(
+        updateObj.elements.push(cardLib.generateElementUpdate(
             elementId.weatherParameterIcon,
-            generateImgPath(imgRootPath, weatherImg[secInfo.type]))
+            cardLib.generateImgPath(cardLib.imgRootPath, weatherImg[secInfo.type]))
         )
 
-        updateObj.elements.push(generateElementUpdate(
+        updateObj.elements.push(cardLib.generateElementUpdate(
             elementId.weatherParameterValue,
             secInfo.value)
         )
-        updateObj.elements.push(generateElementUpdate(
+        updateObj.elements.push(cardLib.generateElementUpdate(
             elementId.weatherParameterUnits,
             secInfo.unit)
         )
-        
+
     }
     if (update) {
         updateCard(JSON.stringify(updateObj))
@@ -244,22 +250,22 @@ function readConfig() {
     readFile('/etc/config.json', '', function (err, data) {
         if (!err) {
             var config;
-    	    try {
-    	        config = JSON.parse(data);
-    	    } catch(e) {
-    	        print(e); // error in the above string!
-    	        return null;
-    	    }
+            try {
+                config = JSON.parse(data);
+            } catch (e) {
+                print(e); // error in the above string!
+                return null;
+            }
 
-    	    // apply the settings from the config file
-    	    cardIdentifier  = 0;    // TODO: this is temporary
-    	    cardInfo.params.location        = config.cards['0'].location || cardInfo.params.location;
-    	    cardInfo.params.tempUnit        = config.cards['0'].tempUnit || cardInfo.params.tempUnit;
-    	    cardInfo.params.distanceUnit    = config.cards['0'].distanceUnit || cardInfo.params.distanceUnit;
-          print(config.cards['0'].distanceUnit);
-          if(config.cards['0'] && config.cards['0'].enabled !== undefined){
-            cardInfo.enabled = config.cards['0'].enabled && cardInfo.enabled;
-          }
+            // apply the settings from the config file
+            cardIdentifier = 0;    // TODO: this is temporary
+            cardInfo.params.location = config.cards['0'].location || cardInfo.params.location;
+            cardInfo.params.tempUnit = config.cards['0'].tempUnit || cardInfo.params.tempUnit;
+            cardInfo.params.distanceUnit = config.cards['0'].distanceUnit || cardInfo.params.distanceUnit;
+            print(config.cards['0'].distanceUnit);
+            if (config.cards['0'] && config.cards['0'].enabled !== undefined) {
+                cardInfo.enabled = config.cards['0'].enabled && cardInfo.enabled;
+            }
         }
         print("card is enabled: " + cardInfo.enabled);
         print('configuration: location = ' + cardInfo.params.location + '; temperature unit = ' + cardInfo.params.tempUnit + '; distance unit = ' + cardInfo.params.distanceUnit);
@@ -268,23 +274,23 @@ function readConfig() {
 
 function setup() {
     readConfig();
-    if(cardInfo.enabled == true){
-      connect('localhost', 1883, null, function () {
-          subscribe('/cardResponse', function () {
-              createCard();
-          });
-          subscribe('/config/update');
-          // subscribe('/button');
-          // subscribe('/gesture');
+    if (cardInfo.enabled == true) {
+        connect('localhost', 1883, null, function () {
+            subscribe('/cardResponse', function () {
+                createCard();
+            });
+            subscribe('/config/update');
+            // subscribe('/button');
+            // subscribe('/gesture');
         },
-        null,
-        '/card',
-        JSON.stringify({
-          cmd: 'remove_card',
-          cardName: cardInfo.responseTopic
-        })
-      );
-   }
+            null,
+            '/card',
+            JSON.stringify({
+                cmd: 'remove_card',
+                cardName: cardInfo.responseTopic
+            })
+        );
+    }
 }
 
 function loop() {
@@ -295,7 +301,7 @@ function loop() {
 
     // update weather in every  {{updateInterval}}
     if ((new Date - cardInfo.params.prevUpdate) > cardInfo.params.updateInterval) {
-        if ( updateWeather() ){
+        if (updateWeather()) {
             // reset time stamp if successful
             cardInfo.params.prevUpdate = new Date
         } else {
@@ -309,24 +315,24 @@ function loop() {
 }
 
 function onInput(e) {
-    if (typeof e.source !== 'undefined' && typeof e.payload !== 'undefined' ) {
+    if (typeof e.source !== 'undefined' && typeof e.payload !== 'undefined') {
         print('input! input source: ' + e.source + ', value: ' + e.payload)
     }
 }
 
 function onMessage(e) {
-    if (typeof e.topic !== 'undefined' && typeof e.payload !== 'undefined' ) {
+    if (typeof e.topic !== 'undefined' && typeof e.payload !== 'undefined') {
         print('message! topic: ' + e.topic + ', value: ' + e.payload)
         switch (e.topic) {
             case '/cardResponse':
-              cardInfo = handleCardResponseMessage(cardInfo, e.payload)
-              break
+                cardInfo = cardLib.handleCardResponseMessage(cardInfo, e.payload)
+                break
             case '/config/update':
-              readConfig()
-              cardInfo.params.prevUpdate = 0 // force an update
-              break
+                readConfig()
+                cardInfo.params.prevUpdate = 0 // force an update
+                break
             default:
-              break
+                break
         }
     }
 }

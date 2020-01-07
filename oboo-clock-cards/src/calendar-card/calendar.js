@@ -1,8 +1,11 @@
+var cardLib = require("card-lib");
+var onRecvMessage = cardLib.onRecvMessage; // is there a cleaner way to do this?
+
 var dateLast = new Date();
 var day = dateLast.getDate();
 var cardInfo = {
     id: -1,
-    responseTopic: '/calendarCard_' + getEpochMillis(),
+    responseTopic: '/calendarCard_' + cardLib.getEpochMillis(),
     //responseTopic: '/calendarCard',
     // bgColor: 0xc44569,
     bgColor: 0x0,
@@ -39,10 +42,10 @@ var elementId = {
 
 function createCard () {
     print("createCard");
-    var cardObj = generateNewCardObj(cardInfo.bgColor, cardInfo.responseTopic);
+    var cardObj = cardLib.generateNewCardObj(cardInfo.bgColor, cardInfo.responseTopic);
 
     //elementId.calendar
-    cardObj.elements.push(generateElementCal(elementId.calendar, 'calendar',
+    cardObj.elements.push(cardLib.generateElementCal(elementId.calendar, 'calendar',
                                             40, //size
                                             5, //posX
                                             0, //posY
@@ -96,9 +99,9 @@ function setup() {
 
 function updateCalendar () {
 //    print("updateCalendar");
-    var updateObj = generateUpdateCardObj(cardInfo.id);
+    var updateObj = cardLib.generateUpdateCardObj(cardInfo.id);
 
-    updateObj.elements.push(generateDate());
+    updateObj.elements.push(cardLib.generateDate());
 
     updateCard(JSON.stringify(updateObj));
     return true;
@@ -127,7 +130,7 @@ function onMessage(e) {
         switch (e.topic) {
             case '/cardResponse':
                 print("handle card on response");
-                cardInfo = handleCardResponseMessage(cardInfo, e.payload);
+                cardInfo = cardLib.handleCardResponseMessage(cardInfo, e.payload);
                 break;
             case '/config/update':
                 readConfig();

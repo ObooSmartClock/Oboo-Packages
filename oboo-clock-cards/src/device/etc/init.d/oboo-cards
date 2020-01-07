@@ -6,12 +6,12 @@ USE_PROCD=1
 
 BIN="/usr/bin/ort"
 FILE1="/usr/bin/js/mcu.js"
-FILE2="/usr/bin/js/weather.js"
-FILE3="/usr/bin/js/timer.js"
-FILE4="/usr/bin/js/audio.js"
-FILE5="/usr/bin/js/music.js"
+FILE2="/usr/cards/weather.js"
+FILE3="/usr/cards/timer.js"
+FILE4="/usr/cards/audio.js"
+FILE5="/usr/cards/music.js"
 FILE6="/usr/bin/js/system.js"
-FILE7="/usr/bin/js/calendar.js"
+FILE7="/usr/cards/calendar.js"
 
 start_service_function () {
         procd_open_instance

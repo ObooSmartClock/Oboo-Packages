@@ -17,7 +17,7 @@ function convertSpeed (speed, unit) {
 	}
 }
 
-function getYahooWeather (location, tempUnit, distanceUnit) {
+exports.getWeather = function(location, tempUnit, distanceUnit) {
 	if (tempUnit === undefined) tempUnit = 'celsius'
 	if (distanceUnit === undefined) distanceUnit = 'metric'
 

@@ -34,15 +34,18 @@ void printHelp ();
 
 void initRuntime();
 void destroyRuntime();
-int loadJS (char* filename, char* path);
+int loadJS (char* filePath);
+void getFilePath(char* fullPath, char* filename, char* path);
 
 void getExeDir (char *path);
+void getCWDir (char *path);
+
 
 void handleMessage(char* topic, char* payload);
 
 void invokeCallback(char* cbIndex);
 
-void runSetup();
+int runSetup();
 int runLoop();
 
 duk_ret_t native_print(duk_context*);

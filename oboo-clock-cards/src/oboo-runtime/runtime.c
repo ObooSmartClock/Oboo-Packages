@@ -8,6 +8,11 @@
 #include <curl/curl.h>
 #include "messageQueue.h"
 #include "serialPort.h"
+#include "duktape/fileio.h"
+
+#include <unistd.h>
+#include <stdio.h>
+#include <limits.h>
 
 //popen
 #include <string.h>
@@ -20,6 +25,7 @@ struct ThreadInf aTi[MAX_NUMBER_OF_THREADS];
 int curRun = 0; //currently running
 int tIndex[MAX_NUMBER_OF_THREADS];
 
+
 //queue for callbacks
 #include <sys/queue.h>
 
@@ -30,6 +36,28 @@ struct callbacks {
 
 struct callbacksq q;
 TAILQ_HEAD(callbacksq, callbacks);
+
+const char * module_loader = "Duktape.modSearch = function (id) {  \n\
+    /* readFile() reads a file from disk, and returns a string or undefined. \n\
+     * 'id' is in resolved canonical form so it only contains terms and \n\
+     * slashes, and no '.' or '..' terms. \n\
+     */ \n\
+    var res; \n\
+     \n\
+    id = ''+id; // make sure id is a string.\n\
+    print('loading module:'+ id); \n\
+     \n\
+    if(!id.endsWith('.js')){ \n\
+      id = id+'.js'; \n\
+    } \n\
+    res = FileIo.readfile('modules/' + id ); \n\
+     \n\
+    if (typeof res === 'string') { \n\
+        return res; \n\
+    } \n\
+     \n\
+    throw new Error('module not found: ' + id); \n\
+}";
 
 void initRuntime() {
   int status = 0;
@@ -42,11 +70,7 @@ void initRuntime() {
   ctx = duk_create_heap_default();
 
   /* Init Module Loader */
-  // TODO: implement module search function
   duk_module_duktape_init(ctx);
-  // duk_get_global_string(ctx, "Duktape");
-  // duk_push_c_function(ctx, native_mod_search, 4 /*nargs*/);
-  // duk_put_prop_string(ctx, -2, "modSearch");
 
   /* Init System Functions */
   duk_push_c_function(ctx, native_print, 1 /*nargs*/);
@@ -60,6 +84,11 @@ void initRuntime() {
 
   duk_push_c_function(ctx, native_readFile, 3 /*nargs*/);
   duk_put_global_string(ctx, "readFile");
+
+
+  fileio_register(ctx);
+
+  duk_eval_string(ctx, module_loader);
 
   duk_push_c_function(ctx, native_setGpio, 2 /*nargs*/);
   duk_put_global_string(ctx, "setGpio");
@@ -175,12 +204,12 @@ void printHelp () {
 }
 
 // find path of binary and copy it to the path argument
-void getExeDir (char *path) {
+ void getExeDir (char *path) {
   int numChars;
-  char buf[MAX_CHAR_LEN];
+   char buf[MAX_CHAR_LEN];
   numChars = readlink("/proc/self/exe", buf, MAX_CHAR_LEN);
   buf[numChars] = 0; // null-terminate the string
-
+ 
   duk_push_string(ctx, buf);
   duk_put_global_string(ctx, "progName");
   duk_push_string(ctx, "\\/[^\\/]*$");
@@ -189,25 +218,32 @@ void getExeDir (char *path) {
 
   duk_get_global_string(ctx, "progName");
   strcpy(path, duk_get_string(ctx, -1));
+ }
 
-#ifdef MAC_DEBUG
-  // DEBUG: for testing on mac
-  strcpy(path, "./");
-#endif
+// find path of current working directory.
+void getCWDir (char *path) {
+  char buf[PATH_MAX+1];
+
+  if (getcwd(buf, sizeof(buf)) == NULL) {
+    perror("getcwd() error");
+    return -1;
+  }
+  sprintf(path, "%s", buf);
+  return 1;
 }
 
-int loadJS (char* filename, char* path) {
-  duk_int_t rc;
-  char filePath[MAX_CHAR_LEN];
-  char lineBuff[MAX_CHAR_LEN];
-
+void getFilePath(char * fullPath, char* filename, char* path){
+  // filename path is absolute
   if (filename[0] == '/') {
-      printf("filename is absolute!\n");
-      // filename path is absolute
-      sprintf(filePath, "%s", filename);
+      sprintf(fullPath, "%s", filename);
   } else {
-      sprintf(filePath, "%s/%s", path, filename);
+      sprintf(fullPath, "%s/%s", path, filename);
   }
+}
+
+int loadJS (char* filePath) {
+  duk_int_t rc;
+  char lineBuff[MAX_CHAR_LEN];
 
   FILE *f = fopen(filePath, FILE_RD_FLAGS);
   if ((long int)f <= 0) {
@@ -222,7 +258,7 @@ int loadJS (char* filename, char* path) {
       }
       rc = duk_peval_string(ctx, "eval(strBuff);");
       if (rc != 0) {
-        printf("error loading js file '%s': %s\n", filename, duk_safe_to_string(ctx, -1));
+        printf("error loading js file '%s': %s\n", filePath, duk_safe_to_string(ctx, -1));
       }
 
       // close the file
@@ -231,13 +267,14 @@ int loadJS (char* filename, char* path) {
   return 0;  /* no return value (= undefined) */
 }
 
-void runSetup () {
+int runSetup () {
   duk_int_t rc;
   rc = duk_peval_string(ctx, "setup();");
   if (rc != 0) {
     printf("error running '%s' function: %s\n", "setup()", duk_safe_to_string(ctx, -1));
+    return EXIT_FAILURE;
   }
-  // TODO: change this to return EXIT_SUCCESS or EXIT_FAILURE
+  return EXIT_SUCCESS;
 }
 
 int runLoop () {

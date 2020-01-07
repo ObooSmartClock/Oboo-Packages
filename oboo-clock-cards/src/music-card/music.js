@@ -1,7 +1,10 @@
+var cardLib = require("card-lib");
+var onRecvMessage = cardLib.onRecvMessage; // is there a cleaner way to do this?
+
 var cardInfo = {
     id: -1,
     active: false,
-    responseTopic: '/musicCard_' + getEpochMillis(),
+    responseTopic: '/musicCard_' + cardLib.getEpochMillis(),
     bgColor: -1,
     nightlight: [
         0x4eb96f,
@@ -27,16 +30,16 @@ var cardImg = {
 
 // card functions
 function createCard () {
-    var cardObj = generateNewCardObj(cardInfo.bgColor, cardInfo.responseTopic);
+    var cardObj = cardLib.generateNewCardObj(cardInfo.bgColor, cardInfo.responseTopic);
     // background and buttons
-    cardObj.elements.push(generateImageElement(
+    cardObj.elements.push(cardLib.generateImageElement(
                             elementId.background,
-                            generateImgPath(imgRootPath, cardImg['background']),
+                            cardLib.generateImgPath(cardLib.imgRootPath, cardImg['background']),
                             20, 80)
                         );
-    cardObj.elements.push(generateImageElement(
+    cardObj.elements.push(cardLib.generateImageElement(
                             elementId.buttons,
-                            generateImgPath(imgRootPath, cardImg['buttons']),
+                            cardLib.generateImgPath(cardLib.imgRootPath, cardImg['buttons']),
                             12, 16)
                         );
 
@@ -146,7 +149,7 @@ function onMessage(e) {
         print('message! topic: ' + e.topic + ', value: ' + e.payload);
         switch (e.topic) {
             case '/cardResponse':
-                cardInfo = handleCardResponseMessage(cardInfo, e.payload);
+                cardInfo = cardLib.handleCardResponseMessage(cardInfo, e.payload);
                 break;
             default:
                 break;
