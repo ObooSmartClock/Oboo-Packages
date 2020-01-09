@@ -7,8 +7,8 @@
 
 include $(TOPDIR)/rules.mk
 PKG_NAME:=oboo-clock-cards
-PKG_VERSION:=0.2.8
-PKG_RELEASE:=1
+PKG_VERSION:=0.2.9
+PKG_RELEASE:=0
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
