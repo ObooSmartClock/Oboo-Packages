@@ -63,6 +63,7 @@ var weatherImg = {
     'wind-speed': 'wind-sign',
     'humidity': 'humidity',
     'pressure': 'pressure',
+    'temp-hi-lo': 'temp-hi-lo',
 
     separator: "line",
 }

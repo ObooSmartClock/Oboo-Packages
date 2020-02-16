@@ -54,9 +54,9 @@ function getYahooWeather (location, tempUnit, distanceUnit) {
 	        		value: jsonResult.main.humidity
 	        	},
 	        	{
-	        		type: 'pressure',
-	        		unit: 'hPa',
-	        		value: jsonResult.main.pressure
+	        		type: 'temp-hi-lo',
+	        		unit: convertTemp(jsonResult.main.temp_min, tempUnit) + tempUnit[0],
+	        		value: convertTemp(jsonResult.main.temp_max, tempUnit)
 	        	}
 	        ]
 	    }
