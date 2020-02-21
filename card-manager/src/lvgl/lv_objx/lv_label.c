@@ -672,7 +672,9 @@ static bool lv_label_design(lv_obj_t * label, const lv_area_t * mask, lv_design_
         if(ext->no_break != 0) flag |= LV_TXT_FLAG_NO_BREAK;
         if(ext->align == LV_LABEL_ALIGN_CENTER) flag |= LV_TXT_FLAG_CENTER;
 
-		lv_draw_label(&coords, mask, style, ext->text, flag, &ext->offset);
+        if(ext->text != NULL) {
+		    lv_draw_label(&coords, mask, style, ext->text, flag, &ext->offset);
+        }
     }
     return true;
 }
