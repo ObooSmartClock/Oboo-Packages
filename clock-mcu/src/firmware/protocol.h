@@ -19,6 +19,7 @@
 #define CMD_SET_ALL_BUTTONS 'l'
 #define CMD_SET_DISPLAY_BRIGHTNESS 'B'
 #define CMD_SET_DAY_NIGHT_LED 'D'
+#define CMD_SET_BLINKING 'K'
 #define CMD_SET_INIT 'I'
 
 #define CMD_SEND_GESTURE 'G'
@@ -125,6 +126,12 @@ bool parseInput (char* rxData) {
       }
       saveConfig();
     break;
+
+    case CMD_SET_BLINKING:
+      mcuConfig.blink = (unsigned)(*rxData - '0') < 2 ? (*rxData - '0') : 2; 
+      saveConfig();
+    break;
+
 
     case CMD_SET_INIT:
     	sprintf(buf, "%lu", getEpoch());

@@ -74,12 +74,15 @@ void handleTime() {
 #endif 	// RTC_ENABLED
 
 	// interval for flashing time display separator colon
-	if (millis() - prevSeparatorTime >= separatorInterval) {
-		flipTimeDisplaySeparator();
+  if (millis() - prevSeparatorTime >= separatorInterval) {
+		if (mcuConfig.blink == 2 || (mcuConfig.blink == 1 && bDay)) 
+			flipTimeDisplaySeparator();
+		else
+			forceTimeDisplaySeparator();
 
 		// prepare for next interval
 		prevSeparatorTime = millis();
-	}
+	} 
 }
 
 // helper functions

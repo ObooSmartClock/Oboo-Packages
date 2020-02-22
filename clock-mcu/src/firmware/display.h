@@ -95,6 +95,11 @@ void flipTimeDisplaySeparator() {
 	bSeparatorColon = !bSeparatorColon;
 }
 
+void forceTimeDisplaySeparator() {
+  bSeparatorColon = true;
+}
+
+
 void setError() {
 	// handle the error case
 	_setChar(3, 'o', false);
