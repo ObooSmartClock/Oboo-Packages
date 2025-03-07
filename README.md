@@ -33,3 +33,12 @@ If you have a code change that you would like to share with everyone, please cre
 Once the PR is accepted in this repo, create a PR with a dummy change in the [Oboo-Source](https://github.com/ObooSmartClock/Oboo-Source) repo to trigger the CD system. 
 
 It will build the packages and release them to: http://repo.getoboo.com/oboo-clock/packages/latest/
+
+## How can I enable SSH access on the Oboo?
+
+1. Navigate to https://setup.getoboo.com/?dev=1
+2. Follow the instructions to Configure an Existing Oboo (More info [here](https://getoboo.com/how-to/#change-settings))
+3. Scroll down to the bottom and click the **Enable SSH** button
+   ![screenshot of oboo web app and enable ssh button](./oboo-enable-ssh.png)
+4. Hit the **Apply Settings** button to write the changes to your Oboo
+5. Follow the [Omega2 Connecting to SSH guide](https://docs.onion.io/omega2-docs/connecting-to-the-omega-terminal.html#connecting-to-the-omega-terminal-ssh) to connect to the Oboo's command line over SSH
